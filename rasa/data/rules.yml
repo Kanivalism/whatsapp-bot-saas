@@ -1,0 +1,37 @@
+version: "3.1"
+
+rules:
+- rule: Saludar siempre
+  steps:
+  - intent: saludar
+  - action: utter_saludar
+
+- rule: Despedir siempre
+  steps:
+  - intent: despedir
+  - action: utter_despedir
+
+- rule: Ayuda
+  steps:
+  - intent: ayuda
+  - action: utter_ayuda
+```
+
+---
+
+## ⏸️ **PAUSA 5**
+
+**Confirma que creaste estos 2 archivos en la carpeta `rasa/data/`:**
+- ✅ `nlu.yml`
+- ✅ `rules.yml`
+
+**Tu carpeta `rasa/` ahora debería tener:**
+```
+rasa/
+├── config.yml
+├── domain.yml
+├── credentials.yml
+├── endpoints.yml
+└── data/
+    ├── nlu.yml
+    └── rulesl

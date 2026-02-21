@@ -1,0 +1,80 @@
+version: "3.1"
+
+intents:
+  - saludar
+  - despedir
+  - consultar_productos
+  - consultar_precio
+  - consultar_disponibilidad
+  - hacer_pedido
+  - confirmar_pedido
+  - proporcionar_direccion
+  - agendar_cita
+  - ayuda
+
+entities:
+  - producto
+  - cantidad
+  - talla
+  - color
+  - direccion
+  - fecha
+  - hora
+  - nombre
+  - telefono
+
+slots:
+  cliente_id:
+    type: text
+    mappings:
+      - type: custom
+  
+  tipo_negocio:
+    type: text
+    mappings:
+      - type: custom
+  
+  plan_subscripcion:
+    type: text
+    mappings:
+      - type: custom
+  
+  carrito:
+    type: list
+    mappings:
+      - type: custom
+  
+  total:
+    type: float
+    mappings:
+      - type: custom
+  
+  direccion_entrega:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: direccion
+
+responses:
+  utter_saludar:
+    - text: "¡Hola! 👋 Bienvenido. ¿En qué puedo ayudarte hoy?"
+  
+  utter_despedir:
+    - text: "¡Gracias por escribir! 😊 Que tengas un excelente día."
+  
+  utter_ayuda:
+    - text: "Puedo ayudarte con:\n📦 Consultar productos\n💰 Ver precios\n🛒 Hacer pedidos\n📅 Agendar citas\n\n¿Qué necesitas?"
+
+actions:
+  - action_consultar_productos
+  - action_consultar_precio
+  - action_agregar_al_carrito
+  - action_calcular_total
+  - action_confirmar_pedido
+  - action_imprimir_pedido
+  - action_agendar_cita
+  - action_actualizar_inventario
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

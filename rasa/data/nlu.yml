@@ -1,0 +1,121 @@
+version: "3.1"
+
+nlu:
+- intent: saludar
+  examples: |
+    - hola
+    - buenos días
+    - buenas tardes
+    - buenas noches
+    - qué tal
+    - hey
+    - saludos
+    - holi
+    - ola
+    - buenas
+
+- intent: despedir
+  examples: |
+    - adiós
+    - hasta luego
+    - chao
+    - nos vemos
+    - bye
+    - hasta pronto
+    - gracias
+    - ok gracias
+    - hasta mañana
+
+- intent: consultar_productos
+  examples: |
+    - qué productos tienen
+    - muéstrame el catálogo
+    - qué venden
+    - tienen [coca cola](producto)?
+    - hay [pan](producto)?
+    - venden [leche](producto)?
+    - qué tienen disponible
+    - mostrar productos
+    - ver catálogo
+    - tienen [arroz](producto)
+    - hay [cerveza](producto)
+    - qué hay
+    - ver productos
+    - lista de productos
+
+- intent: consultar_precio
+  examples: |
+    - cuánto cuesta [cerveza](producto)
+    - precio de [arroz](producto)
+    - a cómo la [azúcar](producto)
+    - cuánto sale [aceite](producto)
+    - cuál es el precio de [pan](producto)
+    - qué precio tiene [leche](producto)
+    - a cuánto está [coca cola](producto)
+    - precio [cerveza](producto)
+    - cuánto vale [pan](producto)
+
+- intent: hacer_pedido
+  examples: |
+    - quiero [2](cantidad) [coca cola](producto)
+    - me das [3](cantidad) [panes](producto)
+    - necesito [1](cantidad) [leche](producto)
+    - ponme [5](cantidad) [cervezas](producto)
+    - dame [10](cantidad) [tortillas](producto)
+    - quiero comprar [1](cantidad) [aceite](producto)
+    - pedir [2](cantidad) [arroz](producto)
+    - agregar [3](cantidad) [pan](producto)
+    - añadir [1](cantidad) [leche](producto)
+
+- intent: consultar_disponibilidad
+  examples: |
+    - hay [coca cola](producto)?
+    - tienen [cerveza](producto) disponible?
+    - está [pan](producto) en stock?
+    - tienen [leche](producto)?
+    - hay disponibilidad de [arroz](producto)
+    - tienen [azúcar](producto) en este momento?
+    - hay stock de [aceite](producto)?
+
+- intent: proporcionar_direccion
+  examples: |
+    - [calle 5 casa 10](direccion)
+    - vivo en [barrio centro](direccion)
+    - mi dirección es [av principal 123](direccion)
+    - [col. reforma calle 8](direccion)
+    - la dirección es [centro #45](direccion)
+    - enviar a [zona norte calle 3](direccion)
+
+- intent: confirmar_pedido
+  examples: |
+    - sí confirmo
+    - confirmar pedido
+    - está bien
+    - ok
+    - sí
+    - adelante
+    - proceder
+    - confirmar
+    - correcto
+    - perfecto
+
+- intent: agendar_cita
+  examples: |
+    - quiero una cita
+    - agendar cita
+    - necesito una cita
+    - hacer una cita
+    - reservar cita
+    - agendar para mañana
+    - quiero cita con el doctor
+
+- intent: ayuda
+  examples: |
+    - ayuda
+    - qué puedes hacer
+    - cómo funciona esto
+    - ayúdame
+    - necesito ayuda
+    - qué hago
+    - help
+    - opciones

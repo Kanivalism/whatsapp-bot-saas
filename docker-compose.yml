@@ -1,0 +1,164 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # PostgreSQL - Base de datos del bot
+  # ============================================
+  postgres-bot:
+    image: postgres:15-alpine
+    container_name: whatsapp-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - whatsapp_internal
+      - frappe_network
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # Redis - Caché y sesiones
+  # ============================================
+  redis-bot:
+    image: redis:7-alpine
+    container_name: whatsapp-redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/data
+    networks:
+      - whatsapp_internal
+      - frappe_network
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ============================================
+  # Rasa Actions - Lógica de negocio
+  # ============================================
+  rasa-actions:
+    build:
+      context: ./rasa-actions
+      dockerfile: Dockerfile
+    container_name: whatsapp-rasa-actions
+    volumes:
+      - ./rasa-actions:/app
+    environment:
+      - POSTGRES_HOST=postgres-bot
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - REDIS_HOST=redis-bot
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - ERPNEXT_URL=${ERPNEXT_URL}
+      - ERPNEXT_API_KEY=${ERPNEXT_API_KEY}
+      - ERPNEXT_API_SECRET=${ERPNEXT_API_SECRET}
+    networks:
+      - whatsapp_internal
+      - frappe_network
+    depends_on:
+      - postgres-bot
+      - redis-bot
+    restart: always
+
+  # ============================================
+  # Rasa Server - Motor NLU
+  # ============================================
+  rasa:
+    image: rasa/rasa:3.6.0-full
+    container_name: whatsapp-rasa
+    volumes:
+      - ./rasa:/app
+    ports:
+      - "5005:5005"
+    command: 
+      - run
+      - --enable-api
+      - --cors
+      - "*"
+      - --debug
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    networks:
+      - whatsapp_internal
+      - frappe_network
+    depends_on:
+      - redis-bot
+      - rasa-actions
+    restart: always
+
+  # ============================================
+  # Backend API - FastAPI
+  # ============================================
+  backend-api:
+    build:
+      context: ./backend-api
+      dockerfile: Dockerfile
+    container_name: whatsapp-backend
+    volumes:
+      - ./backend-api:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-bot:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis-bot:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - RASA_URL=http://rasa:5005
+      - ERPNEXT_URL=${ERPNEXT_URL}
+      - ERPNEXT_API_KEY=${ERPNEXT_API_KEY}
+      - ERPNEXT_API_SECRET=${ERPNEXT_API_SECRET}
+      - WHATSAPP_API_TOKEN=${WHATSAPP_API_TOKEN}
+      - WHATSAPP_PHONE_ID=${WHATSAPP_PHONE_ID}
+      - WHATSAPP_VERIFY_TOKEN=${WHATSAPP_VERIFY_TOKEN}
+    networks:
+      - whatsapp_internal
+      - frappe_network
+    depends_on:
+      - postgres-bot
+      - redis-bot
+      - rasa
+    restart: always
+
+  # ============================================
+  # Nginx - Proxy Reverso
+  # ============================================
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: whatsapp-nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8090:80"
+    networks:
+      - whatsapp_internal
+      - frappe_network
+    depends_on:
+      - backend-api
+    restart: always
+
+# ============================================
+# Redes
+# ============================================
+networks:
+  whatsapp_internal:
+    driver: bridge
+  
+  frappe_network:
+    external: true
+    name: ${FRAPPE_NETWORK}
+
+# ============================================
+# Volúmenes
+# ============================================
+volumes:
+  postgres-data:
+  redis-data:
