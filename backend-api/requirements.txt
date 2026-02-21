@@ -3,10 +3,7 @@ uvicorn[standard]==0.25.0
 sqlalchemy==2.0.23
 psycopg2-binary==2.9.9
 pydantic==2.5.3
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
 python-multipart==0.0.6
 redis==5.0.1
 requests==2.31.0
-python-dotenv==1.0.0
 aiohttp==3.9.1
