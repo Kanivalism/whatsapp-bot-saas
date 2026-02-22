@@ -100,7 +100,7 @@ services:
     container_name: whatsapp-backend
     image: whatsapp-backend:latest
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-bot:5432/${POSTGRES_DB}
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis-bot:6379
