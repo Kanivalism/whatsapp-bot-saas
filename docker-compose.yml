@@ -100,12 +100,12 @@ services:
     container_name: whatsapp-backend
     image: whatsapp-backend:latest
     ports:
-      - "8001:8000"
+      - "PORT:PORT"
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-bot:5432/${POSTGRES_DB}
-      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis-bot:6379
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-bot:PORT/${POSTGRES_DB}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis-bot:PORT
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - RASA_URL=http://rasa:5005
+      - RASA_URL=http://rasa:PORT
       - ERPNEXT_URL=${ERPNEXT_URL}
       - ERPNEXT_API_KEY=${ERPNEXT_API_KEY}
       - ERPNEXT_API_SECRET=${ERPNEXT_API_SECRET}
@@ -153,7 +153,7 @@ services:
           }
           
           upstream frappe {
-              server frappe_docker-frontend-1:8080;
+              server frappe_docker-frontend-1:PORT;
           }
           
           server {
